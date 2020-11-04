@@ -1,3 +1,4 @@
+import { response } from 'express';
 import Transaction from '../models/Transaction';
 
 interface Balance {
@@ -22,11 +23,30 @@ class TransactionsRepository {
   }
 
   public all(): Transaction[] {
-    // TODO
+    return this.transactions;
   }
 
   public getBalance(): Balance {
-    // TODO
+    let income = 0;
+    let outcome = 0;
+    let total = 0;
+    this.transactions.forEach(transaction => {
+      if (transaction.type === 'income') {
+        income += transaction.value;
+        total += transaction.value;
+      } else {
+        outcome += transaction.value;
+        total -= transaction.value;
+      }
+    });
+
+    const balance = {
+      income,
+      outcome,
+      total,
+    };
+
+    return balance;
   }
 
   public create({ title, value, type }: CreateTransactionDTO): Transaction {
